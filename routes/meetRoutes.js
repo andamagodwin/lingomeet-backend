@@ -1,15 +1,11 @@
 const express = require('express');
-const MeetController = require('../controllers/meetController');
-
 const router = express.Router();
+const { createMeetSpace, getTranscripts } = require('../controllers/meetController');
 
-// Schedule a new Google Meet
-router.post('/schedule', MeetController.scheduleMeeting);
+// POST /api/meet/create
+router.post('/create', createMeetSpace);
 
-// Get user's scheduled meetings (optional extension)
-// router.get('/meetings', MeetController.getUserMeetings);
-
-// Cancel a meeting (optional extension)
-// router.delete('/meetings/:meetingId', MeetController.cancelMeeting);
+// GET /api/meet/transcripts/:meetingId
+router.get('/transcripts/:meetingId', getTranscripts);
 
 module.exports = router;

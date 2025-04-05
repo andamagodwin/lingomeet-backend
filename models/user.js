@@ -1,3 +1,4 @@
+const { google } = require('googleapis');
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -17,6 +18,12 @@ const UserSchema = new mongoose.Schema({
   },
   picture: {
     type: String
+  },
+  googleAccessToken: {
+    type: String,
+  },
+  googleRefreshToken: {
+    type: String,
   },
   refreshToken: {
     type: String,

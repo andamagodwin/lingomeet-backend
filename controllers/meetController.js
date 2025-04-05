@@ -1,88 +1,71 @@
 const { google } = require('googleapis');
+const { SpacesServiceClient } = require('@google-apps/meet').v2beta;
 const User = require('../models/user');
-const { OAuth2Client } = require('google-auth-library');
 
-class MeetController {
-  static async scheduleMeeting(req, res) {
-    try {
-      const { userId, title, description, startTime, endTime, attendees } = req.body;
-      
-      // 1. Get user with refresh token
-      const user = await User.findById(userId);
-      if (!user || !user.refreshToken) {
-        return res.status(401).json({ error: 'User not authenticated with Google' });
-      }
+const createMeetSpace = async (req, res) => {
+  const { userId } = req.body;
 
-      // 2. Create and configure OAuth client
-      const oauth2Client = new OAuth2Client(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-        process.env.GOOGLE_REDIRECT_URI
-      );
-
-      // 3. Set credentials and handle token refresh
-      oauth2Client.setCredentials({
-        refresh_token: user.refreshToken
-      });
-
-      // 4. Create calendar service
-      const calendar = google.calendar({
-        version: 'v3',
-        auth: oauth2Client
-      });
-
-      // 5. Create meeting event
-      const event = {
-        summary: title,
-        description: description,
-        start: { 
-          dateTime: new Date(startTime).toISOString(),
-          timeZone: 'UTC'
-        },
-        end: { 
-          dateTime: new Date(endTime).toISOString(),
-          timeZone: 'UTC'
-        },
-        conferenceData: {
-          createRequest: {
-            requestId: Math.random().toString(36).substring(2, 15),
-            conferenceSolutionKey: { type: 'hangoutsMeet' }
-          }
-        },
-        attendees: attendees.map(email => ({ email })),
-      };
-
-      const { data } = await calendar.events.insert({
-        calendarId: 'primary',
-        resource: event,
-        conferenceDataVersion: 1,
-      });
-
-      res.status(201).json({
-        success: true,
-        meetingLink: data.hangoutLink,
-        event: data
-      });
-
-    } catch (error) {
-      console.error('Meet scheduling error:', error);
-      
-      // Handle specific Google auth errors
-      if (error.response && error.response.data && error.response.data.error === 'invalid_grant') {
-        return res.status(401).json({
-          success: false,
-          error: 'Google authentication expired',
-          details: 'Please re-authenticate with Google'
-        });
-      }
-
-      res.status(500).json({ 
-        success: false,
-        error: 'Failed to schedule meeting',
-        details: error.message 
-      });
+  try {
+    // 1. Get user credentials
+    const user = await User.findById(userId);
+    if (!user?.googleRefreshToken) {
+      return res.status(401).json({ error: 'User not authenticated' });
     }
-  }
-}
 
-module.exports = MeetController;
+    // 2. Create proper auth client
+    const auth = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET
+    );
+
+    auth.setCredentials({
+      refresh_token: user.googleRefreshToken,
+      access_token: user.googleAccessToken
+    });
+
+    // 3. Create auth client with universeDomain
+    const authClient = {
+      getClient: async () => auth,
+      getProjectId: async () => process.env.GOOGLE_PROJECT_ID,
+      getUniverseDomain: async () => 'googleapis.com' // THIS FIXES THE ERROR
+    };
+
+    // 4. Initialize Meet client
+    const meetClient = new SpacesServiceClient({
+      auth: authClient
+    });
+
+    // 5. Create space
+    const [space] = await meetClient.createSpace({
+      space: {
+        config: {
+          accessType: 'OPEN'
+        }
+      }
+    });
+
+    res.json({
+      meetUrl: space.meetingUri,
+      spaceName: space.name
+    });
+
+  } catch (error) {
+    console.error('Meet API Error:', error);
+    res.status(500).json({
+      error: 'Failed to create Meet space',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+/**
+ * Gets meeting transcripts (if available)
+ */
+const getTranscripts = async (req, res) => {
+  // Note: Transcripts API is NOT publicly available as of 2024
+  res.status(501).json({ error: 'Transcripts API not yet available' });
+};
+
+
+
+exports.createMeetSpace = createMeetSpace;
+exports.getTranscripts = getTranscripts;
