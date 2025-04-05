@@ -5,4 +5,4 @@ coverage
 .vscode
 *.log
 *.tsbuildinfo
-credentials.json
+credentials.jsoncredentials.json
