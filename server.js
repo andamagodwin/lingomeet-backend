@@ -12,7 +12,12 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5173'], // Add both origins
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://dashboard.lingomeet.space',
+      'https://api.lingomeet.space',
+    ], // Add both origins
     credentials: true,
   }));
 app.use(express.urlencoded({ extended: true }));
@@ -29,7 +34,7 @@ app.get('/', (req, res) => {
 
 });
 
-app.use('/', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/meet', meetRoutes);
 app.use('/api/test', testRoutes);
 app.use('/api/callendar', callendarRoutes);
@@ -42,3 +47,5 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+module.exports = app; // Export the app for testing purposes
