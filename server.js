@@ -5,6 +5,7 @@ const authRoutes = require('./routes/authRoutes');
 const meetRoutes = require('./routes/meetRoutes');
 const testRoutes = require('./routes/testRoutes');
 const callendarRoutes = require('./routes/callendarRoutes');
+const translationRoutes = require('./routes/translationRoutes');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+
 // Database connection
 connectDB();
 
@@ -43,6 +45,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/meet', meetRoutes);
 app.use('/api/test', testRoutes);
 app.use('/api/callendar', callendarRoutes);
+app.use('/api/translation', translationRoutes);
 
 
 app.use((req, res) => {
