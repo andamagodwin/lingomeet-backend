@@ -23,6 +23,12 @@ app.use(cookieParser());
 connectDB();
 
 // Routes
+
+app.get('/', (req, res) => {
+    res.send('API is running...');
+    
+});
+
 app.use('/', authRoutes);
 app.use('/api/meet', meetRoutes);
 app.use('/api/test', testRoutes);
