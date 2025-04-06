@@ -1,6 +1,5 @@
 {
     "version": 2,
-    "name": "ingomeet",
     "builds": [
         {
             "src": "server.js",
@@ -9,7 +8,7 @@
     ],
     "routes": [
         {
-            "src": "/api/(.*)",
+            "src": "/(.*)",
             "dest": "server.js"
         }
     ]
