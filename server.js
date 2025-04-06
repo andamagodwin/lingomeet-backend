@@ -17,6 +17,7 @@ app.use(cors({
       'http://localhost:5173',
       'https://dashboard.lingomeet.space',
       'https://api.lingomeet.space',
+      'https://addon.lingomeet.space'
     ], // Add both origins
     credentials: true,
   }));
