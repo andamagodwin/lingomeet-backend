@@ -16,6 +16,7 @@
     "@google-apps/meet": "^0.6.0",
     "@google-cloud/local-auth": "^2.1.0",
     "@google-cloud/translate": "^9.0.1",
+    "@google/genai": "^0.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
