@@ -35,7 +35,7 @@ exports.handleCallback = async (req, res) => {
   console.log('Using Redirect URI:', process.env.GOOGLE_REDIRECT_URI);
 
   if (!code) {
-    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth-error?message=Missing+code`);
+    return res.redirect(`${process.env.FRONTEND_URL || 'https://dashboard.lingomeet.space'}/auth-error?message=Missing+code`);
   }
 
   try {
@@ -97,7 +97,7 @@ exports.handleCallback = async (req, res) => {
     console.log('🔄 Google Refresh Token:', tokens.refresh_token || 'No new refresh token (might be already granted)');
 
     // 5. Redirect back to frontend with success
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/schedule?auth=success`;
+    const redirectUrl = `${process.env.FRONTEND_URL || 'https://dashboard.lingomeet.space'}/schedule?auth=success`;
     res.redirect(redirectUrl);
 
   } catch (error) {
@@ -107,7 +107,7 @@ exports.handleCallback = async (req, res) => {
     }
 
     const errorMessage = encodeURIComponent(error.message || 'Authentication failed');
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth-error?message=${errorMessage}`;
+    const redirectUrl = `${process.env.FRONTEND_URL || 'https://dashboard.lingomeet.space'}/auth-error?message=${errorMessage}`;
     res.redirect(redirectUrl);
   }
 };
