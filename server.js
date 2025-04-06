@@ -30,6 +30,10 @@ connectDB();
 // Routes
 
 app.get('/', (req, res) => {
+    res.send('Welcome to the lingomeet backend...');
+});
+
+app.get('/api', (req, res) => {
     res.send('API is running...');
 
 });
