@@ -26,13 +26,18 @@ connectDB();
 
 app.get('/', (req, res) => {
     res.send('API is running...');
-    
+
 });
 
 app.use('/', authRoutes);
 app.use('/api/meet', meetRoutes);
 app.use('/api/test', testRoutes);
 app.use('/api/callendar', callendarRoutes);
+
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
 
 
 const PORT = process.env.PORT || 5000;
