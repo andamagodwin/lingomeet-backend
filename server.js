@@ -7,6 +7,8 @@ const testRoutes = require('./routes/testRoutes');
 const callendarRoutes = require('./routes/callendarRoutes');
 const translationRoutes = require('./routes/translationRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const deepgramRoutes = require('./routes/deepgramRoutes');
+const transcriptionRoutes = require('./routes/transcriptionRoutes');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
 
@@ -48,6 +50,8 @@ app.use('/api/test', testRoutes);
 app.use('/api/callendar', callendarRoutes);
 app.use('/api/translation', translationRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/deepgram', deepgramRoutes);
+app.use('/api/transcription', transcriptionRoutes);
 
 
 
